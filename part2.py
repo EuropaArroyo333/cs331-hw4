@@ -25,6 +25,18 @@ def check_access(user_id, file, action):
         add_log_event(user_id, {"file": file, "action": action, "status": "Denied"})
         return False
 
+#Security Log Read
+def read_log(user_id):
+    if USERS.get(user_id, {}).get("integrity") == "High":
+        try:
+            with open("security_log.txt", "r") as log:
+                return log.read()
+        except FileNotFoundError:
+            return "Log file does not exist."
+    else:
+        add_log_event(user_id, {"file": "security_log.txt", "action": "read", "status": "Denied"})
+        return "Access Denied: Insufficient integrity level."
+        
 # EXAMPLE
 event_data = {
     "file": "security_log.txt",
